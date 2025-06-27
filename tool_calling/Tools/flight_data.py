@@ -1,37 +1,56 @@
-from datetime import date, timedelta
-import random
+FLIGHT_ROUTES = {
+    ("South India", "North India"): [
+        {"flight_name": "SouthNorth Express 1", "price": 8500},
+        {"flight_name": "SouthNorth Express 2", "price": 7800},
+    ],
+    ("North India", "South India"): [
+        {"flight_name": "NorthSouth Link 1", "price": 8200},
+        {"flight_name": "NorthSouth Link 2", "price": 7950},
+    ],
+    ("East India", "North India"): [
+        {"flight_name": "EastNorth Shuttle", "price": 6500},
+    ],
+    ("North India", "East India"): [
+        {"flight_name": "NorthEast Flyer", "price": 6200},
+    ],
+    ("West India", "East India"): [
+        {"flight_name": "WestEast Coastal", "price": 7100},
+    ],
+    ("East India", "West India"): [
+        {"flight_name": "EastWest Breeze", "price": 6900},
+    ],
+    ("East India", "South India"): [
+        {"flight_name": "Eastern Southbound", "price": 7000},
+        {"flight_name": "Kolkata-Chennai Direct", "price": 7200},
+    ],
+    ("South India", "East India"): [
+        {"flight_name": "Southern Eastbound", "price": 7100},
+        {"flight_name": "Chennai-Kolkata Direct", "price": 7300},
+    ],
 
-# List of major Indian cities used for mock flight routes.
-INDIAN_CITIES = [
-    "Delhi", "Mumbai", "Bangalore", "Chennai", "Kolkata",
-    "Hyderabad", "Ahmedabad", "Pune", "Jaipur", "Lucknow"
-]
+    ("South India", "South India"): [
+        {"flight_name": "Southern Hopper 1", "price": 3000},
+        {"flight_name": "Southern Hopper 2", "price": 3200},
+    ],
+    ("North India", "North India"): [
+        {"flight_name": "Northern Local 1", "price": 4000},
+        {"flight_name": "Northern Local 2", "price": 4200},
+    ],
+    ("West India", "West India"): [
+        {"flight_name": "Western Shuttle 1", "price": 3500},
+        {"flight_name": "Western Shuttle 2", "price": 3700},
+    ],
+    ("East India", "East India"): [
+        {"flight_name": "Eastern Local 1", "price": 2800},
+        {"flight_name": "Eastern Local 2", "price": 3000},
+    ],
 
-# Dictionary to store mock flight availability.
-# Keys are (ORIGIN_CITY_UPPER, DESTINATION_CITY_UPPER) tuples.
-# Values are dictionaries: {date_object: is_available (boolean)}.
-MOCK_FLIGHT_DATA = {}
-
-def generate_mock_flight_availability(num_days_forecast=10):
-    """
-    Generates simulated flight availability data for routes between Indian cities.
-    Availability is randomized, with a higher probability for 'available'.
-    """
-    today = date.today()
-    for i in range(num_days_forecast):
-        current_date = today + timedelta(days=i)
-        for origin in INDIAN_CITIES:
-            for destination in INDIAN_CITIES:
-                if origin == destination:
-                    continue
-
-                route_key = (origin.upper(), destination.upper())
-                if route_key not in MOCK_FLIGHT_DATA:
-                    MOCK_FLIGHT_DATA[route_key] = {}
-
-                # Simulate availability (e.g., 80% chance of being available).
-                is_available = random.random() < 0.8
-                MOCK_FLIGHT_DATA[route_key][current_date] = is_available
-
-# populating MOCK_FLIGHT_DATA for immediate use by the router.
-generate_mock_flight_availability()
+    ("South India", "West India"): [
+        {"flight_name": "SouthWest Connector 1", "price": 7000},
+        {"flight_name": "SouthWest Connector 2", "price": 7300},
+    ],
+    ("West India", "South India"): [
+        {"flight_name": "WestSouth Link 1", "price": 7200},
+        {"flight_name": "WestSouth Link 2", "price": 7500},
+    ],
+}
