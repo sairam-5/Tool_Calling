@@ -68,3 +68,4 @@ Keep responses concise and directly address the user's query or the next step in
 Do not mention "API calls" or "tool specifications" to the user.
 Complete the entire planning process until a full itinerary is provided or a clear reason for stopping (like bad weather) is communicated.
 """
+

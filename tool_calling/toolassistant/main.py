@@ -2,7 +2,8 @@ import boto3
 import requests
 import json
 from datetime import date, timedelta # Used for dynamic date calculations
-
+from dotenv import load_dotenv
+load_dotenv()
 import sys
 import os
 
@@ -48,7 +49,6 @@ class ClaudeAgent:
         pre-processes it sends it to Bedrock,
         and then processes Bedrock's responses.
         """
-        print("\n--- Claude AI Travel Planner ---")
         print("Hello! I'm your AI Travel Planner. How can I assist you today?")
         print("Type 'x' to exit at any time.")
 
@@ -96,7 +96,8 @@ class ClaudeAgent:
         call tools, or continue the conversation.
         """
         if max_recursion <= 0:
-            print("[Warning: Maximum recursion depth reached. Ending conversation.]")
+            print("[Warning: Maximum recursion depth reached. " \
+            "Ending conversation.]")
             return
 
         # Add the AI's message to the conversation history.
@@ -296,7 +297,7 @@ class ClaudeAgent:
         return text, None # No relative date found in the text.
 
 
-    def _get_tool_specs(self) -> list:
+    def _get_tool_specs(self):
         """
         Provides the OpenAPI specifications for all tools. Bedrock uses these
         specifications to understand how to call the tools.
@@ -381,7 +382,6 @@ class ClaudeAgent:
         """
         Prompts the user for input in the console. Handles 'x' command to exit.
         """
-        print("\n" + "-"*50) # Visual separator
         user_input = input(f"{prompt_text} (type 'x' to exit): ")
         if user_input.lower() == 'x':
             return None
