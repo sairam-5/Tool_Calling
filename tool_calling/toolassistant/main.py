@@ -16,7 +16,7 @@ if package_root not in sys.path:
 
 from prompt import SYSTEM_PROMPT
 
-from Tools.weather  import get_weather_forecast
+from Tools.weather import get_weather_forecast
 
 AWS_REGION = "us-east-1" 
 MODEL_ID = "anthropic.claude-3-sonnet-20240229-v1:0" 
@@ -41,41 +41,7 @@ class ClaudeAgent:
         """
         self.system_prompt = [{"text": SYSTEM_PROMPT}]
         self.tool_config = {"tools": self._get_tool_specs()}
-        self.bedrock_runtime_client = boto3.client("bedrock-runtime", region_name=AWS_REGION)
-
-    def run(self):
-        """
-        Starts the conversational loop with the user. It takes user input,
-        pre-processes it sends it to Bedrock,
-        and then processes Bedrock's responses.
-        """
-        print("Hello! I'm your AI Travel Planner. How can I assist you today?")
-        print("Type 'x' to exit at any time.")
-
-        conversation = [] # Stores the ongoing chat history with the LLM.
-
-        user_input = self._get_user_input("Your travel request")
-
-        while user_input is not None:
-            # Convert any relative dates in the user's query
-            processed_user_input, _ = self._resolve_relative_date(user_input)
-
-            # Add the user's processed message to the conversation history.
-            message = {"role": "user", "content": [{"text": processed_user_input}]}
-            conversation.append(message)
-
-            # Send the complete conversation history to the Bedrock model.
-            bedrock_response = self._send_conversation_to_bedrock(conversation)
-
-            # Process the AI's response, which might involve tool calls.
-            self._process_model_response(
-                bedrock_response, conversation, max_recursion=MAX_RECURSIONS
-            )
-
-            # Prompt for the next user input to continue the conversation.
-            user_input = self._get_user_input("Your next request")
-
-        print("\n--- Thank you for using the Claude AI Travel Planner! ---")
+        self.bedrock_runtime_client = boto3.client("bedrock-runtime", region_name="us-east-1")
 
     def _send_conversation_to_bedrock(self, conversation):
         """
@@ -168,7 +134,7 @@ class ClaudeAgent:
         # Recursively process the AI's new response.
         self._process_model_response(response, conversation, max_recursion - 1)
 
-    def _invoke_tool(self, tool_name: str, input_data: dict) -> dict:
+    def _invoke_tool(self, tool_name: str, input_data: dict):
         """
         Routes the tool call to the appropriate function or external API.
         Handles errors during tool execution.
@@ -285,7 +251,7 @@ class ClaudeAgent:
                 elif days_ahead == 0 and phrase_tuple == today.strftime("%A").lower():
                     days_ahead = 0
                 elif days_ahead == 0: 
-                     days_ahead = 7
+                    days_ahead = 7
                 
                 resolved_date = today + timedelta(days=days_ahead)
                 resolved_date_str = resolved_date.isoformat()
@@ -318,7 +284,7 @@ class ClaudeAgent:
             }
         }
 
-        # Define spec for the Flight Search Tool (FastAPI service).
+        # Define spec for the Flight Search Tool (FastAPI ).
         flight_tool_spec = {
             "name": "search_flights",
             "description": "Search for available flights between broad geographical regions on a specific date.",
@@ -335,7 +301,7 @@ class ClaudeAgent:
             }
         }
 
-        # Define spec for the Train Search Tool (FastAPI service).
+        # Define spec for the Train Search Tool (FastAPI ).
         train_tool_spec = {
             "name": "search_trains",
             "description": "Search for available trains between broad geographical regions on a specific date.",
@@ -352,7 +318,7 @@ class ClaudeAgent:
             }
         }
 
-        # Define spec for the Hotel Search Tool (FastAPI service).
+        # Define spec for the Hotel Search Tool (FastAPI ).
         hotel_tool_spec = {
             "name": "search_hotels",
             "description": "Search for available hotels in a specific broad geographical region for given check-in and check-out dates.",
@@ -376,16 +342,6 @@ class ClaudeAgent:
             {"toolSpec": train_tool_spec},
             {"toolSpec": hotel_tool_spec}
         ]
-
-    @staticmethod
-    def _get_user_input(prompt_text="Enter your request"):
-        """
-        Prompts the user for input in the console. Handles 'x' command to exit.
-        """
-        user_input = input(f"{prompt_text} (type 'x' to exit): ")
-        if user_input.lower() == 'x':
-            return None
-        return user_input.strip()
 
 if __name__ == "__main__":
     agent = ClaudeAgent()
